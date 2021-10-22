@@ -49,7 +49,7 @@ class TestPaymentReturn(SavepointCase):
                 .id,
             }
         )
-        cls.partner = cls.env["res.partner"].create({"name": "Test"})
+        cls.partner = cls.env["res.partner"].create({"name": "Test", "property_account_receivable_id": cls.account.id})
         cls.partner_1 = cls.env["res.partner"].create({"name": "Test 1"})
         cls.invoice = cls.env["account.move"].create(
             {
