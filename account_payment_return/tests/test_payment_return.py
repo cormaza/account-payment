@@ -151,14 +151,14 @@ class TestPaymentReturn(SavepointCase):
             self.payment_return.unlink()
         self.payment_return.action_cancel()
         self.assertEqual(self.payment_return.state, "cancelled")
-        self.assertEqual(self.invoice.payment_state, "paid")
+        self.assertIn(self.invoice.payment_state, ("paid", "in_payment"))
         self.assertTrue(self.receivable_line.reconciled)
         self.payment_return.action_draft()
         self.assertEqual(self.payment_return.state, "draft")
         self.payment_return.unlink()
 
     def test_payment_return_auto_reconcile(self):
-        self.assertEqual(self.invoice.payment_state, "paid")
+        self.assertIn(self.invoice.payment_state, ("paid", "in_payment"))
         self.payment_return.action_draft()
         self.payment_return.line_ids[0].expense_amount = 20.0
         self.payment_return.line_ids[0]._onchange_expense_amount()
