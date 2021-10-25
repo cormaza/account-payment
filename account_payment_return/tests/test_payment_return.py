@@ -49,7 +49,9 @@ class TestPaymentReturn(SavepointCase):
                 .id,
             }
         )
-        cls.partner = cls.env["res.partner"].create({"name": "Test", "property_account_receivable_id": cls.account.id})
+        cls.partner = cls.env["res.partner"].create(
+            {"name": "Test", "property_account_receivable_id": cls.account.id}
+        )
         cls.partner_1 = cls.env["res.partner"].create({"name": "Test 1"})
         cls.invoice = cls.env["account.move"].create(
             {
@@ -125,7 +127,7 @@ class TestPaymentReturn(SavepointCase):
 
     def test_payment_return(self):
         self.payment_return.action_cancel()  # No effect
-        self.assertEqual(self.invoice.payment_state, "paid")
+        self.assertIn(self.invoice.payment_state, ("paid", "in_payment"))
         self.assertEqual(self.payment_return.state, "cancelled")
         self.payment_return.action_draft()
         self.assertEqual(self.payment_return.state, "draft")
@@ -171,7 +173,7 @@ class TestPaymentReturn(SavepointCase):
 
     def test_payment_partial_return(self):
         self.payment_return.line_ids[0].amount = 500.0
-        self.assertEqual(self.invoice.payment_state, "paid")
+        self.assertIn(self.invoice.payment_state, ("paid", "in_payment"))
         self.payment_return.action_confirm()
         self.assertEqual(self.invoice.payment_state, "not_paid")
         self.assertEqual(self.invoice.amount_residual, 500.0)
