@@ -179,7 +179,7 @@ class TestPaymentReturn(SavepointCase):
         self.assertEqual(self.invoice.amount_residual, 500.0)
         self.assertFalse(self.receivable_line.reconciled)
         self.payment_return.action_cancel()
-        self.assertEqual(self.invoice.payment_state, "paid")
+        self.assertIn(self.invoice.payment_state, ("paid", "in_payment"))
         self.assertTrue(self.receivable_line.reconciled)
 
     def test_find_match_invoice(self):
